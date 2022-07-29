@@ -14,7 +14,7 @@ function getCart() {
 // 
 function addToCart(id) {
   let cart = getCart();
-  let founditem = cart.find(item => item.id === id.id && item.colors === id.colors);
+  let founditem = cart.find(item => item.id === data.id && item.colors === data.colors);
   if (founditem) {
     founditem.quantity += id.quantity;
   } else {

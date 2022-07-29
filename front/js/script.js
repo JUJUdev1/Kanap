@@ -1,20 +1,15 @@
+import { productApi } from "./http/product_config.js";
+
 // récupérer l id items
 const items = document.getElementById("items");
 
-// récupérer les produits de l'api
-async function getProducts() {
-  const response = await fetch("http://localhost:3000/api/products/");
-  return await response.json();
-}
-
 (async () => {
-  const data = await getProducts();
-  console.log(data);
+  const data = await productApi.fetchAll();
 
-// créer un élément HTML pour chaque produit
+  // créer un élément HTML pour chaque produit
   data.forEach((products) => {
     let a = document.createElement("a");
-    a.href='./product.html?id=' + products._id;
+    a.href = "./product.html?id=" + products._id;
     items.appendChild(a);
 
     let article = document.createElement("article");
