@@ -14,6 +14,5 @@
         const response = await fetch(this.baseUrl + this.endPoint + '/' + id );
         return await response.json();
     }
-
 }
 
