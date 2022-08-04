@@ -29,6 +29,8 @@ function getCart() {
 async function displayCart(product, cartItem) {
   let article = document.createElement("article");
   article.classList.add("cart__item");
+  article.dataset.id = cartItem.id;
+  article.dataset.color = cartItem.color;
   cartItems.appendChild(article);
 
   let divCartItemImg = document.createElement("div");
@@ -98,7 +100,50 @@ async function displayCart(product, cartItem) {
   cartItemContentP.textContent = "Supprimer";
   cartItemContentSettingsDelete.appendChild(cartItemContentP);
 
-  // fonction qui va supprimer le produit du localStorage
+  // fonction pour supprimer un produit du localStorage
+  function deleteItem() {
+    const elementDelete = document.querySelectorAll(".deleteItem");
+    for (let element of elementDelete) {
+      element.addEventListener("click", function (event) {
+        const findParent = event.target.closest("article");
+        const dataId = findParent.dataset.id;
+        const dataColor = findParent.dataset.color;
+        const cart = getCart();
+        if (window.confirm("Voulez-vous vraiment supprimer ce produit ?")) {
+          localStorage.removeItem("cart");
+          for (let i in cart) {
+            if (cart[i].id === dataId && cart[i].color === dataColor) {
+              cart.splice(i, 1);
+              localStorage.setItem("cart", JSON.stringify(cart));
+              location.reload();
+            }
+          }
+        }
+      });
+    }
+  }
+  deleteItem();
+
+  // fonctino pour modifier la quantité d'un produit dans le localStorage
+  function updateQuantity() {
+    const elementQuantity = document.querySelectorAll(".itemQuantity");
+    for (let element of elementQuantity) {
+      element.addEventListener("change", function (event) {
+        const findParent = event.target.closest("article");
+        const dataId = findParent.dataset.id;
+        const dataColor = findParent.dataset.color;
+        const cart = getCart();
+        for (let i in cart) {
+          if (cart[i].id === dataId && cart[i].color === dataColor) {
+            cart[i].quantity = parseInt(event.target.value);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            location.reload();
+          }
+        }
+      });
+    }
+  }
+  updateQuantity();
 
   // calculer le prix total du panier
   let total = 0;
@@ -112,11 +157,10 @@ async function displayCart(product, cartItem) {
   }
 
   // calculer le nom total du panier
-    let totalQuantitys = 0;
-    for (let cartItem of getCart()) {
-        totalQuantitys += cartItem.quantity;
-    }
-    
+  let totalQuantitys = 0;
+  for (let cartItem of getCart()) {
+    totalQuantitys += cartItem.quantity;
+  }
 
   // afficher le prix total du panier et le nom de l'article
   function displayTotalPriceArticle() {
