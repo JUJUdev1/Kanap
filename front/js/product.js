@@ -1,6 +1,3 @@
-// importer la config de l API
-import { productApi } from "./http/product_config.js";
-
 // récupérer l id items et leur class
 const img = document.querySelector(".item__img");
 const title = document.getElementById("title");
@@ -10,9 +7,11 @@ const colors = document.getElementById("colors");
 const quantity = document.getElementById("quantity");
 
 // récupérer le fetch pour récuperer les données par produit en fonction de l id
-(async () => {
-  const params = new URLSearchParams(window.location.search);
-  const data = await productApi.fetch(params.get("id"));
+const main = async () => {
+  // récupérer le fetch pour récuperer toute les données du produit
+  let params = new URLSearchParams(document.location.search);
+  let idParams = params.get("id");
+  const data = await basket.getApiId(idParams);
 
   // changer le titre du document
   document.querySelector("title").textContent = data.name;
@@ -34,19 +33,9 @@ const quantity = document.getElementById("quantity");
     colors.appendChild(option);
   });
 
-  // créer une fonction pour récuperer le localStorage
-  function getCart() {
-    let cart = localStorage.getItem("cart");
-    if (cart == null) {
-      return [];
-    } else {
-      return JSON.parse(cart);
-    }
-  }
-
   // si on ajoute un produit identique au panier alors on additionne la quantité du panier sinon on ajoute le produit au panier
   function compare(product) {
-    let cart = getCart();
+    let cart = basket.cart;
     for (let i in cart) {
       let productInCart = cart[i];
       if (
@@ -54,18 +43,13 @@ const quantity = document.getElementById("quantity");
         productInCart.color === product.color
       ) {
         productInCart.quantity = product.quantity + productInCart.quantity;
-        saveCart(cart);
+        basket.saveCart();
         return;
       }
     }
     cart.push(product);
-    saveCart(cart);
+    basket.saveCart();
     return;
-  }
-
-  // sauvegarder le panier dans le localStorage
-  function saveCart(cart) {
-    localStorage.setItem("cart", JSON.stringify(cart));
   }
 
   // fonction pour ajouter un produit au panier
@@ -96,4 +80,5 @@ const quantity = document.getElementById("quantity");
     });
   }
   addEventListener();
-})();
+};
+main();

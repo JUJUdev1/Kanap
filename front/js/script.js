@@ -1,12 +1,12 @@
-// importer la config de l API
-import { productApi } from "./http/product_config.js";
-
 // récupérer l id items
 const items = document.getElementById("items");
 
-// récupérer le fetchAll pour récuperer toute les données du produit
-(async () => {
+
+const main = async () => {
+  
+  // récupérer le fetch pour récuperer toute les données du produit
   const data = await basket.getApi();
+  console.log('bravo Vous avez récupéré l api', data);
 
   // créer un élément HTML pour chaque produit dans une boucle
   data.forEach((products) => {
@@ -32,4 +32,5 @@ const items = document.getElementById("items");
     p.textContent = products.description;
     article.appendChild(p);
   });
-})();
+};
+main();

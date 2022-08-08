@@ -1,4 +1,4 @@
-// récuperer les classes et id 
+// récuperer les classes et id
 const cartItems = document.getElementById("cart__items");
 const totalPrice = document.getElementById("totalPrice");
 const totalQuantity = document.getElementById("totalQuantity");
@@ -6,10 +6,8 @@ const form = document.querySelector("cart__order__form");
 
 // fonction qui va recuperer les données de chaque produit en fonction des produits dans le localStorage
 async function displayAllProducts() {
-  
- await getApi();
-  for (let cartItem of this.cart) {
-
+  const data = await basket.getApi();
+  for (let cartItem of basket.cart) {
     //creer un filter pour recuperer les données du produit en fonction de son id
     const product = data.filter((p) => p._id == cartItem.id);
     displayCart(product[0], cartItem);
@@ -91,76 +89,30 @@ async function displayCart(product, cartItem) {
   cartItemContentP.classList.add("deleteItem");
   cartItemContentP.textContent = "Supprimer";
   cartItemContentSettingsDelete.appendChild(cartItemContentP);
-
-  // fonction pour supprimer un produit du localStorage
-  function deleteItem() {
-    const elementDelete = document.querySelectorAll(".deleteItem");
-    for (let element of elementDelete) {
-      element.addEventListener("click", function (event) {
-        const findParent = event.target.closest("article");
-        const dataId = findParent.dataset.id;
-        const dataColor = findParent.dataset.color;
-        const cart = getCart();
-        if (window.confirm("Voulez-vous vraiment supprimer ce produit ?")) {
-          localStorage.removeItem("cart");
-          for (let i in cart) {
-            if (cart[i].id === dataId && cart[i].color === dataColor) {
-              cart.splice(i, 1);
-              localStorage.setItem("cart", JSON.stringify(cart));
-              location.reload();
-            }
-          }
-        }
-      });
+  cartItemContentP.addEventListener("click", function (event) {
+    const findParent = event.target.closest("article");
+  
+    if (window.confirm("Voulez-vous vraiment supprimer ce produit ?")) {
+      basket.deleteItem(cartItem.id, cartItem.color);
     }
-  }
-  deleteItem();
+  });
 
   // fonction pour modifier la quantité d'un produit dans le localStorage
-  function updateQuantity() {
+  function updateElementQuantity() {
     const elementQuantity = document.querySelectorAll(".itemQuantity");
     for (let element of elementQuantity) {
       element.addEventListener("change", function (event) {
         const findParent = event.target.closest("article");
         const dataId = findParent.dataset.id;
         const dataColor = findParent.dataset.color;
-        const cart = getCart();
-        for (let i in cart) {
-          if (cart[i].id === dataId && cart[i].color === dataColor) {
-            cart[i].quantity = parseInt(event.target.value);
-            localStorage.setItem("cart", JSON.stringify(cart));
-            location.reload();
-          }
-        }
+        const dataQuantity = parseInt(event.target.value);
+        basket.updateQuantity(dataId, dataColor, dataQuantity);
       });
     }
   }
-  updateQuantity();
+  updateElementQuantity();
 
-  // calculer le prix total du panier
-  let total = 0;
-  const data = await productApi.fetchAll();
-  for (let cartItem of getCart()) {
-    for (let product of data) {
-      if (product._id === cartItem.id) {
-        total += product.price * cartItem.quantity;
-      }
-    }
-  }
-
-  // calculer le nom total du panier
-  let totalQuantitys = 0;
-  for (let cartItem of getCart()) {
-    totalQuantitys += cartItem.quantity;
-  }
-
-  // afficher le prix total du panier et le nom de l'article
-  function displayTotalPriceArticle() {
-    totalPrice.textContent = total;
-    totalQuantity.textContent = totalQuantitys;
-  }
-  displayTotalPriceArticle();
+  // fonction pour calculer le prix total du panier
+  basket.getTotalPrice();
 }
-
 displayAllProducts();
-
