@@ -1,12 +1,14 @@
+// importer la config de l API
 import { productApi } from "./http/product_config.js";
 
 // récupérer l id items
 const items = document.getElementById("items");
 
+// récupérer le fetchAll pour récuperer toute les données du produit
 (async () => {
   const data = await productApi.fetchAll();
 
-  // créer un élément HTML pour chaque produit
+  // créer un élément HTML pour chaque produit dans une boucle
   data.forEach((products) => {
     let a = document.createElement("a");
     a.href = "./product.html?id=" + products._id;

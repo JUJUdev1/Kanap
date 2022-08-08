@@ -1,5 +1,7 @@
+// importer la config de l API
 import { productApi } from "./http/product_config.js";
 
+// récupérer l id items et leur class
 const img = document.querySelector(".item__img");
 const title = document.getElementById("title");
 const price = document.getElementById("price");
@@ -7,13 +9,14 @@ const description = document.getElementById("description");
 const colors = document.getElementById("colors");
 const quantity = document.getElementById("quantity");
 
+// récupérer le fetch pour récuperer les données par produit en fonction de l id
 (async () => {
   const params = new URLSearchParams(window.location.search);
   const data = await productApi.fetch(params.get("id"));
-  console.log(data);
 
   // changer le titre du document
   document.querySelector("title").textContent = data.name;
+
   // Insérer un produit et ses détails dans la page Produit
   let img2 = document.createElement("img");
   img.appendChild(img2);
@@ -31,6 +34,7 @@ const quantity = document.getElementById("quantity");
     colors.appendChild(option);
   });
 
+  // créer une fonction pour récuperer le localStorage
   function getCart() {
     let cart = localStorage.getItem("cart");
     if (cart == null) {
@@ -39,8 +43,8 @@ const quantity = document.getElementById("quantity");
       return JSON.parse(cart);
     }
   }
-  // si on ajoute un produit identique au panier alors on additionne la quantité du panier
-  // si le produit est dans le panier on ajoute la quantité au panier et si le produit n'est pas dans le panier on ajoute le produit au panier
+
+  // si on ajoute un produit identique au panier alors on additionne la quantité du panier sinon on ajoute le produit au panier
   function compare(product) {
     let cart = getCart();
     for (let i in cart) {
@@ -59,10 +63,12 @@ const quantity = document.getElementById("quantity");
     return;
   }
 
+  // sauvegarder le panier dans le localStorage
   function saveCart(cart) {
     localStorage.setItem("cart", JSON.stringify(cart));
   }
-  // Ajouter un produit au panier
+
+  // fonction pour ajouter un produit au panier
   function addEventListener() {
     let addToCart = document.getElementById("addToCart");
     addToCart.addEventListener("click", () => {

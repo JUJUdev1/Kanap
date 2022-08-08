@@ -1,14 +1,18 @@
-import { productApi } from "./http/product_config.js";
+// importer la config de l API
 
+
+// récuperer les classes et id 
 const cartItems = document.getElementById("cart__items");
 const totalPrice = document.getElementById("totalPrice");
 const totalQuantity = document.getElementById("totalQuantity");
+const form = document.querySelector("cart__order__form");
 
 // fonction qui va recuperer les données de chaque produit en fonction des produits dans le localStorage
 async function displayAllProducts() {
-  let cart = getCart();
-  const data = await productApi.fetchAll();
-  for (let cartItem of cart) {
+  
+ const products = await basket.getApi();
+  for (let cartItem of this.basket) {
+
     //creer un filter pour recuperer les données du produit en fonction de son id
     const product = data.filter((p) => p._id == cartItem.id);
     displayCart(product[0], cartItem);
@@ -16,7 +20,7 @@ async function displayAllProducts() {
   return;
 }
 
-// récuperer les données du localStorage
+// fonction pour récuperer les données du localStorage
 function getCart() {
   let cart = localStorage.getItem("cart");
   if (cart == null) {
@@ -26,6 +30,7 @@ function getCart() {
   }
 }
 
+// fonction pour display les données du localStorage dans la page cart
 async function displayCart(product, cartItem) {
   let article = document.createElement("article");
   article.classList.add("cart__item");
@@ -124,7 +129,7 @@ async function displayCart(product, cartItem) {
   }
   deleteItem();
 
-  // fonctino pour modifier la quantité d'un produit dans le localStorage
+  // fonction pour modifier la quantité d'un produit dans le localStorage
   function updateQuantity() {
     const elementQuantity = document.querySelectorAll(".itemQuantity");
     for (let element of elementQuantity) {
@@ -171,3 +176,4 @@ async function displayCart(product, cartItem) {
 }
 
 displayAllProducts();
+
