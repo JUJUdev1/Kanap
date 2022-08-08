@@ -1,6 +1,3 @@
-// importer la config de l API
-
-
 // récuperer les classes et id 
 const cartItems = document.getElementById("cart__items");
 const totalPrice = document.getElementById("totalPrice");
@@ -10,24 +7,14 @@ const form = document.querySelector("cart__order__form");
 // fonction qui va recuperer les données de chaque produit en fonction des produits dans le localStorage
 async function displayAllProducts() {
   
- const products = await basket.getApi();
-  for (let cartItem of this.basket) {
+ await getApi();
+  for (let cartItem of this.cart) {
 
     //creer un filter pour recuperer les données du produit en fonction de son id
     const product = data.filter((p) => p._id == cartItem.id);
     displayCart(product[0], cartItem);
   }
   return;
-}
-
-// fonction pour récuperer les données du localStorage
-function getCart() {
-  let cart = localStorage.getItem("cart");
-  if (cart == null) {
-    return [];
-  } else {
-    return JSON.parse(cart);
-  }
 }
 
 // fonction pour display les données du localStorage dans la page cart

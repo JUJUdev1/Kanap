@@ -6,7 +6,7 @@ const items = document.getElementById("items");
 
 // récupérer le fetchAll pour récuperer toute les données du produit
 (async () => {
-  const data = await productApi.fetchAll();
+  const data = await basket.getApi();
 
   // créer un élément HTML pour chaque produit dans une boucle
   data.forEach((products) => {
