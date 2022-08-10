@@ -15,6 +15,7 @@ class Basket {
       .then((data) => data);
   }
 
+  // fonction pour recuperer l api de l id seulement
   getApiId(id) {
     return fetch(`http://localhost:3000/api/products/${id}`)
       .then((response) => response.json())

@@ -89,30 +89,127 @@ async function displayCart(product, cartItem) {
   cartItemContentP.classList.add("deleteItem");
   cartItemContentP.textContent = "Supprimer";
   cartItemContentSettingsDelete.appendChild(cartItemContentP);
-  cartItemContentP.addEventListener("click", function (event) {
-    const findParent = event.target.closest("article");
-  
+
+  // fonction pour supprimer un produit au click
+  cartItemContentP.addEventListener("click", function () {
     if (window.confirm("Voulez-vous vraiment supprimer ce produit ?")) {
       basket.deleteItem(cartItem.id, cartItem.color);
     }
   });
 
   // fonction pour modifier la quantité d'un produit dans le localStorage
-  function updateElementQuantity() {
-    const elementQuantity = document.querySelectorAll(".itemQuantity");
-    for (let element of elementQuantity) {
-      element.addEventListener("change", function (event) {
-        const findParent = event.target.closest("article");
-        const dataId = findParent.dataset.id;
-        const dataColor = findParent.dataset.color;
-        const dataQuantity = parseInt(event.target.value);
-        basket.updateQuantity(dataId, dataColor, dataQuantity);
-      });
-    }
-  }
-  updateElementQuantity();
+  cartItemContentSettingsQuantityInput.addEventListener("change", function () {
+    basket.updateQuantity();
+  });
 
   // fonction pour calculer le prix total du panier
   basket.getTotalPrice();
 }
+
+/* ***************************************************Regex et control du formulaire************************************************************* */
+
+// set mon input a false par defaut
+let defaultInput = {
+  firstName: false,
+  lastName: false,
+  address: false,
+  city: false,
+  email: false,
+};
+
+// fonction pour controler la saisie du formulaire de commande
+function controler() {
+  // regex pour le nom
+  const regexName = /(^.{1,}[a-zA-ZÀ-ÿ]+$)/;
+  const firstName = document.getElementById("firstName");
+  const lastName = document.getElementById("lastName");
+  const address = document.getElementById("address");
+  // fonction listener pour le nom
+  firstName.addEventListener("input", function (event) {
+    let nameInput = event.target.value; // recupere la valeur de l'input
+    let Valid = regexName.test(nameInput); // teste la regex
+    let msgError = document.getElementById("firstNameErrorMsg"); // recupere le msg d'erreur
+    if (Valid === false) {
+      // si la regex ne correspond pas
+      msgError.textContent = "Veuillez saisir un prénom valide."; // affiche le msg d'erreur
+      msgError.style.display = "block"; // affiche le msg d'erreur
+      defaultInput.firstName = false; // met la variable de validation a false
+    } else {
+      // si la regex correspond
+      defaultInput.firstName = true; // met la variable de validation a true
+      msgError.style.display = "none"; // cache le msg d'erreur
+    }
+  });
+
+  // fonction listener pour le Prénom
+  lastName.addEventListener("input", function (event) {
+    let nameInput = event.target.value; // recupere la valeur de l'input
+    let Valid = regexName.test(nameInput); // teste la regex
+    let msgError = document.getElementById("lastNameErrorMsg"); // recupere le msg d'erreur
+    if (Valid === false) {
+      // si la regex ne correspond pas
+      msgError.textContent = "Veuillez saisir un nom valide."; // affiche le msg d'erreur
+      msgError.style.display = "block"; // affiche le msg d'erreur
+      defaultInput.lastName = false; // met la variable de validation a false
+    } else {
+      // si la regex correspond
+      defaultInput.lastName = true; // met la variable de validation a true
+      msgError.style.display = "none"; // cache le msg d'erreur
+    }
+  });
+
+  // fonction listener pour l'adresse
+  address.addEventListener("input", function (event) {
+    let addressInput = event.target.value; // recupere la valeur de l'input
+    let Valid = /(^.{1,}[a-zA-ZÀ-ÿ0-9]+$)/.test(addressInput); // teste la regex
+    let msgError = document.getElementById("addressErrorMsg"); // recupere le msg d'erreur
+    if (Valid === false) {
+      // si la regex ne correspond pas
+      msgError.textContent = "Veuillez saisir une adresse valide."; // affiche le msg d'erreur
+      msgError.style.display = "block"; // affiche le msg d'erreur
+      defaultInput.address = false; // met la variable de validation a false
+    } else {
+      // si la regex correspond
+      defaultInput.address = true; // met la variable de validation a true
+      msgError.style.display = "none"; // cache le msg d'erreur
+    }
+  });
+
+  // fonction listener pour la ville
+  city.addEventListener("input", function (event) {
+    let cityInput = event.target.value; // recupere la valeur de l'input
+    let Valid = /(^.{1,}[a-zA-ZÀ-ÿ]+$)/.test(cityInput); // teste la regex
+    let msgError = document.getElementById("cityErrorMsg"); // recupere le msg d'erreur
+    if (Valid === false) {
+      // si la regex ne correspond pas
+      msgError.textContent = "Veuillez saisir une ville valide."; // affiche le msg d'erreur
+      msgError.style.display = "block"; // affiche le msg d'erreur
+      defaultInput.city = false; // met la variable de validation a false
+    } else {
+      // si la regex correspond
+      defaultInput.city = true; // met la variable de validation a true
+      msgError.style.display = "none"; // cache le msg d'erreur
+    }
+  });
+
+  // fonction listener pour l'email
+  email.addEventListener("input", function (event) {
+    let emailInput = event.target.value; // recupere la valeur de l'input
+    let Valid = /(^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-zA-Z]{2,4}$)/.test(
+      emailInput
+    ); // teste la regex
+    let msgError = document.getElementById("emailErrorMsg"); // recupere le msg d'erreur
+    if (Valid === false) {
+      // si la regex ne correspond pas
+      msgError.textContent = "Veuillez saisir une adresse email valide."; // affiche le msg d'erreur
+      msgError.style.display = "block"; // affiche le msg d'erreur
+      defaultInput.email = false; // met la variable de validation a false
+    } else {
+      // si la regex correspond
+      defaultInput.email = true; // met la variable de validation a true
+      msgError.style.display = "none"; // cache le msg d'erreur
+    }
+  });
+}
+controler();
 displayAllProducts();
