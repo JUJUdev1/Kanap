@@ -4,6 +4,7 @@ const totalPrice = document.getElementById("totalPrice");
 const totalQuantity = document.getElementById("totalQuantity");
 const form = document.querySelector("cart__order__form");
 
+/* ***************************************************Display de mes produits******************************************************************** */
 // fonction qui va recuperer les données de chaque produit en fonction des produits dans le localStorage
 async function displayAllProducts() {
   const data = await basket.getApi();
@@ -14,7 +15,9 @@ async function displayAllProducts() {
   }
   return;
 }
+//////////////////////////////////////////////////////////////////END//////////////////////////////////////////////////////////////////////////////
 
+/* ***************************************************Display de mon cart*********************************************************************** */
 // fonction pour display les données du localStorage dans la page cart
 async function displayCart(product, cartItem) {
   let article = document.createElement("article");
@@ -105,9 +108,9 @@ async function displayCart(product, cartItem) {
   // fonction pour calculer le prix total du panier
   basket.getTotalPrice();
 }
+//////////////////////////////////////////////////////////////////END//////////////////////////////////////////////////////////////////////////////
 
-/* ***************************************************Regex et control du formulaire************************************************************* */
-
+/* ***************************************************Regex et control du formulaire************************************************************ */
 // set mon input a false par defaut
 let defaultInput = {
   firstName: false,
@@ -211,5 +214,6 @@ function controler() {
     }
   });
 }
+//////////////////////////////////////////////////////////////////END//////////////////////////////////////////////////////////////////////////////
 controler();
 displayAllProducts();
