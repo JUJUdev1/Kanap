@@ -1,4 +1,4 @@
-// récupérer l id items et leur class
+// récupérer l id items et les classes class
 const img = document.querySelector(".item__img");
 const title = document.getElementById("title");
 const price = document.getElementById("price");
