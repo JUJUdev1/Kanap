@@ -98,6 +98,7 @@ async function displayCart(product, cartItem) {
     if (window.confirm("Voulez-vous vraiment supprimer ce produit ?")) { // si on clique sur "oui"
       basket.deleteItem(cartItem.id, cartItem.color); // on supprime le produit du localStorage
     }
+    basket.getTotalPrice(); // on calcule le prix total du panier
   });
 
   // fonction pour modifier la quantité d'un produit dans le localStorage

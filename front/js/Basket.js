@@ -38,9 +38,9 @@ class Basket {
   }
 
   // fonction pour ajouter un produit au localStorage
-  updateQuantity(id, color, quantity) {
+  updateQuantity(quantity) {
     for (let i in this.cart) { // pour chaque element du cart
-      if (this.cart[i].id === id && this.cart[i].color === color) { // si l'id et la couleur sont identiques
+      if (this.cart[i].id === dataset.id && this.cart[i].color === dataset.color) { // si l'id et la couleur sont identiques
         this.cart[i].quantity = quantity; // mettre la quantité a la nouvelle valeur
         this.saveCart(); // sauvegarder le cart
       }
