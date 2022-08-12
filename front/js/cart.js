@@ -6,9 +6,10 @@ const form = document.querySelector("cart__order__form");
 
 /* ***************************************************Display de mes produits******************************************************************** */
 // fonction qui va recuperer les données de chaque produit en fonction des produits dans le localStorage
-async function displayAllProducts() { 
+async function displayAllProducts() {
   const data = await basket.getApi(); // recuperer les données de l'api
-  for (let cartItem of basket.cart) { // pour chaque produit dans le localStorage
+  for (let cartItem of basket.cart) {
+    // pour chaque produit dans le localStorage
     //creer un filter pour recuperer les données du produit en fonction de son id
     const product = data.filter((p) => p._id == cartItem.id);
     displayCart(product[0], cartItem); // afficher le produit
@@ -44,7 +45,7 @@ async function displayCart(product, cartItem) {
   divCartItemContent.appendChild(cartItemContentDescription); // ajouter le div dans le div cart__item__content
 
   let nomDuProduit = document.createElement("h2"); // creer un h2
-  nomDuProduit.textContent = product.name;  // ajouter le nom du produit
+  nomDuProduit.textContent = product.name; // ajouter le nom du produit
   cartItemContentDescription.appendChild(nomDuProduit); // ajouter le h2 dans le div cart__item__content__description
 
   let couleurDuProduit = document.createElement("p"); // creer un p
@@ -60,30 +61,34 @@ async function displayCart(product, cartItem) {
   divCartItemContent.appendChild(cartItemContentSettings); // ajouter le div dans le div cart__item__content
 
   let cartItemContentSettingsQuantity = document.createElement("div"); // creer un div
-  cartItemContentSettingsQuantity.classList.add(  // ajouter la class cart__item__content__settings__quantity
+  cartItemContentSettingsQuantity.classList.add(
+    // ajouter la class cart__item__content__settings__quantity
     "cart__item__content__settings__quantity"
   );
   cartItemContentSettings.appendChild(cartItemContentSettingsQuantity); // ajouter le div dans le div cart__item__content__settings
 
   let cartItemContentSettintgsQuantityP = document.createElement("p"); // creer un p
   cartItemContentSettintgsQuantityP.textContent = "Qté :"; // ajouter le texte "Qté :"
-  cartItemContentSettingsQuantity.appendChild(  // ajouter le p dans le div cart__item__content__settings__quantity
+  cartItemContentSettingsQuantity.appendChild(
+    // ajouter le p dans le div cart__item__content__settings__quantity
     cartItemContentSettintgsQuantityP
   );
 
-  let cartItemContentSettingsQuantityInput = document.createElement("input");  // creer un input
+  let cartItemContentSettingsQuantityInput = document.createElement("input"); // creer un input
   cartItemContentSettingsQuantityInput.classList.add("itemQuantity"); // ajouter la class itemQuantity
   cartItemContentSettingsQuantityInput.type = "number"; // ajouter le type number
   cartItemContentSettingsQuantityInput.value = cartItem.quantity; // ajouter la quantité du produit dans le input
   cartItemContentSettingsQuantityInput.min = "1"; // ajouter le min à 1
   cartItemContentSettingsQuantityInput.max = "100"; // ajouter le max à 100
   cartItemContentSettingsQuantityInput.name = "itemQuantity"; // ajouter le name à itemQuantity
-  cartItemContentSettingsQuantity.appendChild( // ajouter le input dans le div cart__item__content__settings__quantity
+  cartItemContentSettingsQuantity.appendChild(
+    // ajouter le input dans le div cart__item__content__settings__quantity
     cartItemContentSettingsQuantityInput
   );
 
   let cartItemContentSettingsDelete = document.createElement("div"); // creer un div
-  cartItemContentSettingsDelete.classList.add( // ajouter la class cart__item__content__settings__delete
+  cartItemContentSettingsDelete.classList.add(
+    // ajouter la class cart__item__content__settings__delete
     "cart__item__content__settings__delete"
   );
   cartItemContentSettings.appendChild(cartItemContentSettingsDelete); // ajouter le div dans le div cart__item__content__settings
@@ -95,16 +100,27 @@ async function displayCart(product, cartItem) {
 
   // fonction pour supprimer un produit au click
   cartItemContentP.addEventListener("click", function () {
-    if (window.confirm("Voulez-vous vraiment supprimer ce produit ?")) { // si on clique sur "oui"
+    if (window.confirm("Voulez-vous vraiment supprimer ce produit ?")) {
+      // si on clique sur "oui"
       basket.deleteItem(cartItem.id, cartItem.color); // on supprime le produit du localStorage
     }
+    displayAllProducts(); // on affiche les produits
     basket.getTotalPrice(); // on calcule le prix total du panier
   });
 
   // fonction pour modifier la quantité d'un produit dans le localStorage
-  cartItemContentSettingsQuantityInput.addEventListener("change", function () {
-    basket.updateQuantity(); // on appelle la fonction updateQuantity
-  });
+  cartItemContentSettingsQuantityInput.addEventListener(
+    "change",
+    function (event) {
+      // au changement de la quantité
+      const findParent = event.target.closest("article"); // on cherche le parent de l'input
+      const dataId = findParent.dataset.id; // on recupere l'id du produit
+      const dataColor = findParent.dataset.color; // on recupere la couleur du produit
+      const Quantities = parseInt(event.target.value); // on recupere la quantité du produit
+      basket.updateQuantity(dataId, dataColor, Quantities); // on appelle la fonction updateQuantity
+      basket.getTotalPrice(); // on calcule le prix total du panier
+    }
+  );
 
   // fonction pour calculer le prix total du panier
   basket.getTotalPrice();
@@ -124,7 +140,7 @@ let defaultInput = {
 // fonction pour controler la saisie du formulaire de commande
 function controler() {
   // regex pour le nom
-  const regexName = /(^.{1,}[a-zA-ZÀ-ÿ]+$)/;
+  const regexName = /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/;
   const firstName = document.getElementById("firstName");
   const lastName = document.getElementById("lastName");
   const address = document.getElementById("address");
@@ -217,4 +233,42 @@ function controler() {
 }
 //////////////////////////////////////////////////////////////////END//////////////////////////////////////////////////////////////////////////////
 controler(); // appelle la fonction controler
+
+/* ***************************************************Envoi du formulaire*********************************************************************** */
+// fonction pour envoyer le formulaire
+function sendForm() {
+  const order = document.getElementById("order"); // recupere le formulaire
+  order.addEventListener("click", function (event) {
+    // ecoute le click sur le bouton de commande
+    const firstName = document.getElementById("firstName").value; // recupere le prénom
+    const lastName = document.getElementById("lastName").value; // recupere le nom
+    const address = document.getElementById("address").value; // recupere l'adresse
+    const city = document.getElementById("city").value; // recupere la ville
+    const email = document.getElementById("email").value; // recupere l'email
+    const contact = {
+      // crée un objet contact
+      firstName: firstName,
+      lastName: lastName,
+      address: address,
+      city: city,
+      email: email,
+    };
+    if (firstName && lastName && address && city && email) {
+      event.preventDefault();
+      if (
+        defaultInput.firstName &&
+        defaultInput.lastName &&
+        defaultInput.address &&
+        defaultInput.city &&
+        defaultInput.email
+      ) {
+        basket.sendContact(contact);
+        console.log(contact);
+      }
+    }
+  });
+}
+sendForm(); // appelle la fonction sendForm
+//////////////////////////////////////////////////////////////////END//////////////////////////////////////////////////////////////////////////////
+
 displayAllProducts(); // appelle la fonction displayAllProducts

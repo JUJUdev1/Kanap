@@ -1,10 +1,12 @@
 // créer une class pour stocker mes fonctions et les utiliser
 class Basket {
-  constructor() {  // constructeur de ma class Basket
-    let cart = localStorage.getItem("cart");   // recuperer le localStorage
-    if (cart == null) { // si le localStorage est vide
+  constructor() {
+    // constructeur de ma class Basket
+    let cart = localStorage.getItem("cart"); // recuperer le localStorage
+    if (cart == null) {
+      // si le localStorage est vide
       this.cart = []; // je créer un tableau vide
-    } else { // sinon
+    } else {
       this.cart = JSON.parse(cart); // je recupere le localStorage
     }
   }
@@ -23,28 +25,27 @@ class Basket {
   }
 
   // fonction pour sauvegarder mon cart
-  saveCart() { 
+  saveCart() {
     localStorage.setItem("cart", JSON.stringify(this.cart)); // sauvegarder le cart dans le localStorage
   }
 
   // fonction pour supprimer un produit du localStorage
   deleteItem(id, color) {
-    for (let i in this.cart) { // pour chaque element du cart
-      if (this.cart[i].id === id && this.cart[i].color === color) { // si l'id et la couleur sont identiques
-        this.cart.splice(i, 1); // supprimer l'element
-        this.saveCart(); // sauvegarder le cart
-      }
+    let found = this.cart.find((p) => p.id === id && p.color === color);
+    if (found) {
+      this.cart.splice(this.cart.indexOf(found), 1);
     }
+    window.location.reload();
+    this.saveCart();
   }
 
   // fonction pour ajouter un produit au localStorage
-  updateQuantity(quantity) {
-    for (let i in this.cart) { // pour chaque element du cart
-      if (this.cart[i].id === dataset.id && this.cart[i].color === dataset.color) { // si l'id et la couleur sont identiques
-        this.cart[i].quantity = quantity; // mettre la quantité a la nouvelle valeur
-        this.saveCart(); // sauvegarder le cart
-      }
+  updateQuantity(id, color, quantity) {
+    let found = this.cart.find((p) => p.id === id && p.color === color);
+    if (found) {
+      found.quantity = quantity;
     }
+    this.saveCart();
   }
 
   // fonction pour calculer le prix total du panier
@@ -52,9 +53,12 @@ class Basket {
     // calculer le prix total du panier
     let total = 0; // initialiser le prix total a 0
     const data = await basket.getApi(); // recuperer l'api de tout les produits
-    for (let cartItem of basket.cart) { // pour chaque element du cart
-      for (let product of data) { // pour chaque element de l'api
-        if (product._id === cartItem.id) { // si l'id de l'api est identique a l'id du cart
+    for (let cartItem of basket.cart) {
+      // pour chaque element du cart
+      for (let product of data) {
+        // pour chaque element de l'api
+        if (product._id === cartItem.id) {
+          // si l'id de l'api est identique a l'id du cart
           total += product.price * cartItem.quantity; // calculer le prix total
         }
       }
@@ -62,7 +66,8 @@ class Basket {
 
     // calculer le nom total du panier
     let totalQuantitys = 0; // initialiser la quantité total a 0
-    for (let cartItem of basket.cart) { // pour chaque element du cart
+    for (let cartItem of basket.cart) {
+      // pour chaque element du cart
       totalQuantitys += cartItem.quantity; // calculer la quantité total
     }
 
@@ -71,7 +76,48 @@ class Basket {
       totalPrice.textContent = total; // afficher le prix total
       totalQuantity.textContent = totalQuantitys; // afficher la quantité total
     }
-    displayTotalPriceArticle(); 
+    displayTotalPriceArticle();
+  }
+
+  // creer une fonction pour envoyer les données du contact a l api
+  sendContact(contact) {
+    const getAllId = []; // initialiser un tableau vide
+    if (this.cart.length <= 0) {
+      // si le cart est vide afficher un message d'erreur
+      window.alert(
+        "Votre panier est vide, veuillez ajouter des produits dans votre panier"
+      );
+    } else {
+      for (let i in this.cart) {
+        // pour chaque element du cart
+        for (let j = 0; j < this.cart[i].quantity; j++) {
+          // pour chaque quantité
+          getAllId.push(this.cart[i].id); // ajouter l'id dans le tableau
+        }
+      }
+    }
+    // envoyer les données du contact a l api
+    const dataToSend = {
+      products: getAllId,
+      contact: contact,
+    };
+    return fetch("http://localhost:3000/api/products/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataToSend), // envoyer les données au format json
+    })
+      .then((response) => response.json()) // recuperer le json de l'api
+      .then((data) => {
+        // stocker le json dans une variable
+        document.location.href = `./confirmation.html?orderId=${data.orderId}`; // rediriger vers la page de confirmation
+      })
+      .catch((error) => {
+        // si une erreur est survenue
+        console.log(error); // afficher l'erreur
+      });
   }
 }
+
 const basket = new Basket(); // créer une instance de ma class Basket
