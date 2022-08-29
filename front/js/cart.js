@@ -137,102 +137,154 @@ let defaultInput = {
   email: false,
 };
 
-// fonction pour controler la saisie du formulaire de commande
-function controler() {
-  // regex pour le nom
-  const regexName = /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/;
-  const firstName = document.getElementById("firstName");
-  const lastName = document.getElementById("lastName");
-  const address = document.getElementById("address");
-  // fonction listener pour le nom
-  firstName.addEventListener("input", function (event) {
-    let nameInput = event.target.value; // recupere la valeur de l'input
-    let Valid = regexName.test(nameInput); // teste la regex
-    let msgError = document.getElementById("firstNameErrorMsg"); // recupere le msg d'erreur
-    if (Valid === false) {
-      // si la regex ne correspond pas
-      msgError.textContent = "Veuillez saisir un prénom valide."; // affiche le msg d'erreur
-      msgError.style.display = "block"; // affiche le msg d'erreur
-      defaultInput.firstName = false; // met la variable de validation a false
-    } else {
-      // si la regex correspond
-      defaultInput.firstName = true; // met la variable de validation a true
-      msgError.style.display = "none"; // cache le msg d'erreur
-    }
-  });
 
-  // fonction listener pour le Prénom
-  lastName.addEventListener("input", function (event) {
-    let nameInput = event.target.value; // recupere la valeur de l'input
-    let Valid = regexName.test(nameInput); // teste la regex
-    let msgError = document.getElementById("lastNameErrorMsg"); // recupere le msg d'erreur
-    if (Valid === false) {
-      // si la regex ne correspond pas
-      msgError.textContent = "Veuillez saisir un nom valide."; // affiche le msg d'erreur
-      msgError.style.display = "block"; // affiche le msg d'erreur
-      defaultInput.lastName = false; // met la variable de validation a false
-    } else {
-      // si la regex correspond
-      defaultInput.lastName = true; // met la variable de validation a true
-      msgError.style.display = "none"; // cache le msg d'erreur
-    }
-  });
+let regex = [
+  {
+    name: "firstName",
+    regexName : /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/,
+  },
+  {
+    name: "lastName",
+    regexName : /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/  ,
+  },
+  {
+    name: "address",
+    regexName : /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/    ,
+  },
+  {
+    name: "city",
+    regexName : /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/  ,
+  },
+  {
+    name: "email",
+    regexName : /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/  ,
+  },
+];
 
-  // fonction listener pour l'adresse
-  address.addEventListener("input", function (event) {
-    let addressInput = event.target.value; // recupere la valeur de l'input
-    let Valid = /(^.{1,}[a-zA-ZÀ-ÿ0-9]+$)/.test(addressInput); // teste la regex
-    let msgError = document.getElementById("addressErrorMsg"); // recupere le msg d'erreur
-    if (Valid === false) {
-      // si la regex ne correspond pas
-      msgError.textContent = "Veuillez saisir une adresse valide."; // affiche le msg d'erreur
-      msgError.style.display = "block"; // affiche le msg d'erreur
-      defaultInput.address = false; // met la variable de validation a false
-    } else {
-      // si la regex correspond
-      defaultInput.address = true; // met la variable de validation a true
-      msgError.style.display = "none"; // cache le msg d'erreur
-    }
-  });
 
-  // fonction listener pour la ville
-  city.addEventListener("input", function (event) {
-    let cityInput = event.target.value; // recupere la valeur de l'input
-    let Valid = /(^.{1,}[a-zA-ZÀ-ÿ]+$)/.test(cityInput); // teste la regex
-    let msgError = document.getElementById("cityErrorMsg"); // recupere le msg d'erreur
-    if (Valid === false) {
-      // si la regex ne correspond pas
-      msgError.textContent = "Veuillez saisir une ville valide."; // affiche le msg d'erreur
-      msgError.style.display = "block"; // affiche le msg d'erreur
-      defaultInput.city = false; // met la variable de validation a false
-    } else {
-      // si la regex correspond
-      defaultInput.city = true; // met la variable de validation a true
-      msgError.style.display = "none"; // cache le msg d'erreur
+function controler(input, idForMsgError, regex) {
+  // on recupere 
+  input.addEventListener(input, function (event) {
+    let inputValue = event.target.value;
+    let msgError = document.getElementById(idForMsgError);
+    let valid = regex.test(inputValue);
+    if (!valid) {
+      msgError.textContent = 'not valid';
+      msgError.style.display = "block";
+      defaultInput[input] = false;
+      console.log('la');
+    }
+    else {
+      msgError.style.display = "none";
+      defaultInput[input] = true;
+      console.log('ici');
     }
   });
+  // on appele l eventlistener sur chaque input
 
-  // fonction listener pour l'email
-  email.addEventListener("input", function (event) {
-    let emailInput = event.target.value; // recupere la valeur de l'input
-    let Valid = /(^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-zA-Z]{2,4}$)/.test(
-      emailInput
-    ); // teste la regex
-    let msgError = document.getElementById("emailErrorMsg"); // recupere le msg d'erreur
-    if (Valid === false) {
-      // si la regex ne correspond pas
-      msgError.textContent = "Veuillez saisir une adresse email valide."; // affiche le msg d'erreur
-      msgError.style.display = "block"; // affiche le msg d'erreur
-      defaultInput.email = false; // met la variable de validation a false
-    } else {
-      // si la regex correspond
-      defaultInput.email = true; // met la variable de validation a true
-      msgError.style.display = "none"; // cache le msg d'erreur
-    }
-  });
 }
-//////////////////////////////////////////////////////////////////END//////////////////////////////////////////////////////////////////////////////
-controler(); // appelle la fonction controler
+controler(firstName, "msgErrorFirstName");
+controler(lastName, "msgErrorLastName");
+controler(address, "msgErrorAddress");
+controler(city, "msgErrorCity");  
+controler(email, "msgErrorEmail");
+
+// // fonction pour controler la saisie du formulaire de commande
+// function controler() {
+//   // regex pour le nom
+//   const regexName = /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/;
+//   const firstName = document.getElementById("firstName");
+//   const lastName = document.getElementById("lastName");
+//   const address = document.getElementById("address");
+//   // fonction listener pour le nom
+//   firstName.addEventListener("input", function (event) {
+//     let nameInput = event.target.value; // recupere la valeur de l'input
+//     let Valid = regexName.test(nameInput); // teste la regex
+//     let msgError = document.getElementById("firstNameErrorMsg"); // recupere le msg d'erreur
+//     if (Valid === false) {
+//       // si la regex ne correspond pas
+//       msgError.textContent = "Veuillez saisir un prénom valide."; // affiche le msg d'erreur
+//       msgError.style.display = "block"; // affiche le msg d'erreur
+//       defaultInput.firstName = false; // met la variable de validation a false
+//     } else {
+//       // si la regex correspond
+//       defaultInput.firstName = true; // met la variable de validation a true
+//       msgError.style.display = "none"; // cache le msg d'erreur
+//     }
+//   });
+
+//   // fonction listener pour le Prénom
+//   lastName.addEventListener("input", function (event) {
+//     let nameInput = event.target.value; // recupere la valeur de l'input
+//     let Valid = regexName.test(nameInput); // teste la regex
+//     let msgError = document.getElementById("lastNameErrorMsg"); // recupere le msg d'erreur
+//     if (Valid === false) {
+//       // si la regex ne correspond pas
+//       msgError.textContent = "Veuillez saisir un nom valide."; // affiche le msg d'erreur
+//       msgError.style.display = "block"; // affiche le msg d'erreur
+//       defaultInput.lastName = false; // met la variable de validation a false
+//     } else {
+//       // si la regex correspond
+//       defaultInput.lastName = true; // met la variable de validation a true
+//       msgError.style.display = "none"; // cache le msg d'erreur
+//     }
+//   });
+
+//   // fonction listener pour l'adresse
+//   address.addEventListener("input", function (event) {
+//     let addressInput = event.target.value; // recupere la valeur de l'input
+//     let Valid = /(^.{1,}[a-zA-ZÀ-ÿ0-9]+$)/.test(addressInput); // teste la regex
+//     let msgError = document.getElementById("addressErrorMsg"); // recupere le msg d'erreur
+//     if (Valid === false) {
+//       // si la regex ne correspond pas
+//       msgError.textContent = "Veuillez saisir une adresse valide."; // affiche le msg d'erreur
+//       msgError.style.display = "block"; // affiche le msg d'erreur
+//       defaultInput.address = false; // met la variable de validation a false
+//     } else {
+//       // si la regex correspond
+//       defaultInput.address = true; // met la variable de validation a true
+//       msgError.style.display = "none"; // cache le msg d'erreur
+//     }
+//   });
+
+//   // fonction listener pour la ville
+//   city.addEventListener("input", function (event) {
+//     let cityInput = event.target.value; // recupere la valeur de l'input
+//     let Valid = /(^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$)/.test(cityInput); // teste la regex
+//     let msgError = document.getElementById("cityErrorMsg"); // recupere le msg d'erreur
+//     if (Valid === false) {
+//       // si la regex ne correspond pas
+//       msgError.textContent = "Veuillez saisir une ville valide."; // affiche le msg d'erreur
+//       msgError.style.display = "block"; // affiche le msg d'erreur
+//       defaultInput.city = false; // met la variable de validation a false
+//     } else {
+//       // si la regex correspond
+//       defaultInput.city = true; // met la variable de validation a true
+//       msgError.style.display = "none"; // cache le msg d'erreur
+//     }
+//   });
+
+//   // fonction listener pour l'email
+//   email.addEventListener("input", function (event) {
+//     let emailInput = event.target.value; // recupere la valeur de l'input
+//     let Valid = /(^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-zA-Z]{2,4}$)/.test(
+//       emailInput
+//     ); // teste la regex
+//     let msgError = document.getElementById("emailErrorMsg"); // recupere le msg d'erreur
+//     if (Valid === false) {
+//       // si la regex ne correspond pas
+//       msgError.textContent = "Veuillez saisir une adresse email valide."; // affiche le msg d'erreur
+//       msgError.style.display = "block"; // affiche le msg d'erreur
+//       defaultInput.email = false; // met la variable de validation a false
+//     } else {
+//       // si la regex correspond
+//       defaultInput.email = true; // met la variable de validation a true
+//       msgError.style.display = "none"; // cache le msg d'erreur
+//     }
+//   });
+// }
+// //////////////////////////////////////////////////////////////////END//////////////////////////////////////////////////////////////////////////////
+// controler(); // appelle la fonction controler
 
 /* ***************************************************Envoi du formulaire*********************************************************************** */
 // fonction pour envoyer le formulaire
@@ -274,3 +326,5 @@ sendForm(); // appelle la fonction sendForm
 displayAllProducts(); // appelle la fonction displayAllProducts
 
 // https://jsbin.com/keqinisiro/edit?js,console
+
+
