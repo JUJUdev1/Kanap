@@ -136,34 +136,57 @@ let defaultInput = {
   email: false,
 };
 
-let regex = {
-  firstName: /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/,
-  lastName: /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/,
-  address: /(^.{1,}[a-zA-ZÀ-ÿ0-9]+$)/,
-  city: /(^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$)/,
-  email: /(^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-zA-Z]{2,4}$)/,
+// creer les prametres de chaque input du formulaire et les ajouter dans un objet
+let inputParameters = {
+  firstName: {
+    regex: /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/, // regex pour le nom
+    error: "Veuillez entrer un prénom valide", // message d'erreur
+  },
+  lastName: {
+    regex: /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/, // regex pour le nom
+    error: "Veuillez entrer un nom valide", // message d'erreur
+  },
+  address: {
+    regex: /(^.{1,}[a-zA-ZÀ-ÿ0-9]+$)/, // regex pour l'adresse
+    error: "Veuillez entrer une adresse valide", // message d'erreur
+  },
+  city: {
+    regex: /(^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$)/, // regex pour la ville
+    error: "Veuillez entrer une ville valide", // message d'erreur
+  },
+  email: {
+    regex: /(^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-zA-Z]{2,4}$)/, // regex pour l'email
+    error: "Veuillez entrer un email valide", // message d'erreur
+  },
 };
+
 // creer des message d'erreur pour chaque input
-function controler(input, idForMsgError, regex) {
+function controler(input, idForMsgError, inputParameters) {
+  // on passe en parametre l'input, l'id du message d'erreur et l'objet inputParameters
   input.addEventListener("input", function (event) {
-    let ElementInput = event.target.value;
-    let valid = regex.test(ElementInput);
-    let msgError = document.getElementById(idForMsgError);
+    // au changement de l'input
+    let ElementInput = event.target.value; // on recupere la valeur de l'input
+    let valid = inputParameters.regex.test(ElementInput); // on test la regex avec la valeur de l'input
+    let msgErrorr = document.getElementById(idForMsgError); // on recupere le message d'erreur
     if (!valid) {
-      msgError.textContent = `Veuillez entrer un ${input.name} valide`;
-      msgError.style.display = "block";
-      defaultInput[input] = false;
+      // si la regex ne correspond pas
+      msgErrorr.textContent = `${inputParameters.error}`; // on affiche le message d'erreur
+      msgErrorr.style.display = "block";
+      defaultInput = false; // on change la valeur de l'input dans l'objet defaultInput
+
+      console.log("ici", defaultInput);
     } else {
-      msgError.style.display = "none";
-      defaultInput[input] = true;
+      msgErrorr.style.display = "none"; // on cache le message d'erreur
+      defaultInput = true; // on change la valeur de l'input dans l'objet defaultInput
+      console.log("la", defaultInput);
     }
   });
 }
-controler(firstName, "firstNameErrorMsg", regex.firstName);
-controler(lastName, "lastNameErrorMsg", regex.lastName);
-controler(address, "addressErrorMsg", regex.address);
-controler(city, "cityErrorMsg", regex.city);
-controler(email, "emailErrorMsg", regex.email);
+controler(firstName, "firstNameErrorMsg", inputParameters.firstName); // on appelle la fonction controler pour le premier input
+controler(lastName, "lastNameErrorMsg", inputParameters.lastName); // on appelle la fonction controler pour le second input
+controler(address, "addressErrorMsg", inputParameters.address); // on appelle la fonction controler pour le troisieme input
+controler(city, "cityErrorMsg", inputParameters.city); // on appelle la fonction controler pour le quatrieme input
+controler(email, "emailErrorMsg", inputParameters.email); // on appelle la fonction controler pour le cinquieme input
 
 /* ***************************************************Envoi du formulaire*********************************************************************** */
 // fonction pour envoyer le formulaire
@@ -192,9 +215,9 @@ function sendForm() {
         defaultInput.address &&
         defaultInput.city &&
         defaultInput.email
-      ) {
-        basket.sendContact(contact);
-        console.log(contact);
+      );
+      {
+        basket.sendContact(contact); // on appelle la fonction sendContact
       }
     }
   });
@@ -203,5 +226,3 @@ sendForm(); // appelle la fonction sendForm
 //////////////////////////////////////////////////////////////////END//////////////////////////////////////////////////////////////////////////////
 
 displayAllProducts(); // appelle la fonction displayAllProducts
-
-// https://jsbin.com/keqinisiro/edit?js,console
