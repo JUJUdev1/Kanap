@@ -212,7 +212,8 @@ function sendForm() {
       lastNameErrorMsg.style.display == "block" ||
       addressErrorMsg.style.display == "block" ||
       cityErrorMsg.style.display == "block" ||
-      emailErrorMsg.style.display == "block"
+      emailErrorMsg.style.display == "block" ||
+      basket.alertEmptyCart() // si le panier est vide
     ) {
       event.preventDefault(); // on empeche l'envoi du formulaire
     }
