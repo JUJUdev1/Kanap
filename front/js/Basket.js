@@ -79,24 +79,23 @@ class Basket {
     displayTotalPriceArticle();
   }
 
-// creer une fonction d'alerte si le panier est vide
-  alertEmptyCart() {
-    if (this.cart.length <= 0) {
-      alert("Votre panier est vide"); // afficher une alerte
-    }
-  }
-
   // creer une fonction pour envoyer les données du contact a l api
   sendContact(contact) {
     const getAllId = []; // initialiser un tableau vide
-    // pour chaque element du cart
-    if (this.cart.length > 0) {
-      for (let cartItem of this.cart) {
+    if (this.cart.length <= 0) {
+      // si le cart est vide afficher un message d'erreur
+      window.alert(
+        "Votre panier est vide, veuillez ajouter des produits dans votre panier"
+      );
+    } else {
+      for (let i in this.cart) {
         // pour chaque element du cart
-        getAllId.push(cartItem.id); // ajouter l'id dans le tableau
+        for (let j = 0; j < this.cart[i].quantity; j++) {
+          // pour chaque quantité
+          getAllId.push(this.cart[i].id); // ajouter l'id dans le tableau
+        }
       }
     }
-    
     // envoyer les données du contact a l api
     const dataToSend = {
       products: getAllId,

@@ -143,7 +143,7 @@ let inputParameters = {
     error: "Veuillez entrer un prénom valide", // message d'erreur
   },
   lastName: {
-    regex: /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/,  // regex pour le nom
+    regex: /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/, // regex pour le nom
     error: "Veuillez entrer un nom valide", // message d'erreur
   },
   address: {
@@ -158,25 +158,27 @@ let inputParameters = {
     regex: /(^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-zA-Z]{2,4}$)/, // regex pour l'email
     error: "Veuillez entrer un email valide", // message d'erreur
   },
-  }
-
+};
 
 // creer des message d'erreur pour chaque input
-function controler(input, idForMsgError, inputParameters) { // on passe en parametre l'input, l'id du message d'erreur et l'objet inputParameters
-  input.addEventListener("input", function (event) { // au changement de l'input
+function controler(input, idForMsgError, inputParameters) {
+  // on passe en parametre l'input, l'id du message d'erreur et l'objet inputParameters
+  input.addEventListener("input", function (event) {
+    // au changement de l'input
     let ElementInput = event.target.value; // on recupere la valeur de l'input
     let valid = inputParameters.regex.test(ElementInput); // on test la regex avec la valeur de l'input
     let msgErrorr = document.getElementById(idForMsgError); // on recupere le message d'erreur
-    if (!valid) { // si la regex ne correspond pas
+    if (!valid) {
+      // si la regex ne correspond pas
       msgErrorr.textContent = `${inputParameters.error}`; // on affiche le message d'erreur
-      msgErrorr.style.display = "block"; 
+      msgErrorr.style.display = "block";
       defaultInput = false; // on change la valeur de l'input dans l'objet defaultInput
 
-      console.log('ici',defaultInput);
+      console.log("ici", defaultInput);
     } else {
       msgErrorr.style.display = "none"; // on cache le message d'erreur
       defaultInput = true; // on change la valeur de l'input dans l'objet defaultInput
-      console.log('la', defaultInput);
+      console.log("la", defaultInput);
     }
   });
 }
@@ -191,6 +193,7 @@ controler(email, "emailErrorMsg", inputParameters.email); // on appelle la fonct
 function sendForm() {
   const order = document.getElementById("order"); // recupere le formulaire
   order.addEventListener("click", function (event) {
+    event.preventDefault(); // on empeche l'envoi du formulaire
     // ecoute le click sur le bouton de commande
     const firstName = document.getElementById("firstName").value; // recupere le prénom
     const lastName = document.getElementById("lastName").value; // recupere le nom
@@ -205,21 +208,10 @@ function sendForm() {
       city: city,
       email: email,
     };
-
-    // si un message d'erreur est affiché
-    if (
-      firstNameErrorMsg.style.display == "block" ||
-      lastNameErrorMsg.style.display == "block" ||
-      addressErrorMsg.style.display == "block" ||
-      cityErrorMsg.style.display == "block" ||
-      emailErrorMsg.style.display == "block" ||
-      basket.alertEmptyCart() // si le panier est vide
-    ) {
-      event.preventDefault(); // on empeche l'envoi du formulaire
-    }
-    // sinon on envoi le formulaire
-    else {
-      basket.sendContact(contact); // on appelle la fonction sendContact
+    // si tous les champs sont valides on envoie le formulaire
+    if (defaultInput)
+    {
+      basket.sendContact(contact); // on appelle la fonction
     }
   });
 }
