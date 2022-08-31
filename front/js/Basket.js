@@ -86,7 +86,7 @@ class Basket {
       // si le cart est vide afficher un message d'erreur
       window.alert(
         "Votre panier est vide, veuillez ajouter des produits dans votre panier"
-      );
+      );       
     } else {
       for (let i in this.cart) {
         // pour chaque element du cart
