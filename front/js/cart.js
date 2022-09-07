@@ -174,6 +174,7 @@ function controler(input, idForMsgError, inputParameters, defaultInput) {
     } else {
       msgErrorr.style.display = "none"; // on cache le message d'erreur
       defaultInput = true; // on change la valeur de l'input dans l'objet defaultInput
+      console.log(defaultInput);
     }
   });
 }
@@ -182,6 +183,7 @@ controler(lastName, "lastNameErrorMsg", inputParameters.lastName,defaultInput.la
 controler(address, "addressErrorMsg", inputParameters.address,defaultInput.address); // on appelle la fonction controler pour le troisieme input
 controler(city, "cityErrorMsg", inputParameters.city,defaultInput.city); // on appelle la fonction controler pour le quatrieme input
 controler(email, "emailErrorMsg", inputParameters.email,defaultInput.email); // on appelle la fonction controler pour le cinquieme input
+
 /* ***************************************************Envoi du formulaire*********************************************************************** */
 // fonction pour envoyer le formulaire
 function sendForm() {
@@ -189,11 +191,11 @@ function sendForm() {
   order.addEventListener("click", function (event) {
     event.preventDefault(); // on empeche l'envoi du formulaire
     // ecoute le click sur le bouton de commande
-    const firstName = document.getElementById("firstName"); // recupere le prénom
-    const lastName = document.getElementById("lastName"); // recupere le nom
-    const address = document.getElementById("address"); // recupere l'adresse
-    const city = document.getElementById("city"); // recupere la ville
-    const email = document.getElementById("email"); // recupere l'email
+    const firstName = document.getElementById("firstName")// recupere le prénom
+    const lastName = document.getElementById("lastName") // recupere le nom
+    const address = document.getElementById("address")// recupere l'adresse
+    const city = document.getElementById("city")// recupere la ville
+    const email = document.getElementById("email")// recupere l'email
     const contact = {
       // crée un objet contact
       firstName: firstName.value,
@@ -203,10 +205,17 @@ function sendForm() {
       email: email.value,
     };
 
+    controler(firstName, "firstNameErrorMsg", inputParameters.firstName,defaultInput.firstName); // on appelle la fonction controler pour le premier input
+    controler(lastName, "lastNameErrorMsg", inputParameters.lastName,defaultInput.lastName); // on appelle la fonction controler pour le second input
+    controler(address, "addressErrorMsg", inputParameters.address,defaultInput.address); // on appelle la fonction controler pour le troisieme input
+    controler(city, "cityErrorMsg", inputParameters.city,defaultInput.city); // on appelle la fonction controler pour le quatrieme input
+    controler(email, "emailErrorMsg", inputParameters.email,defaultInput.email); // on appelle la fonction controler pour le cinquieme input
+    console.log(defaultInput);
+    
     // si tous les champs sont valides on envoie le formulaire
     if (defaultInput.firstName && defaultInput.lastName && defaultInput.address && defaultInput.city && defaultInput.email) {
       basket.sendContact(contact); // on appelle la fonction
-      console.log(defaultInput);
+      console.log(defaultInput.address);
     }
   });
 }
