@@ -126,40 +126,37 @@ async function displayCart(product, cartItem) {
 //////////////////////////////////////////////////////////////////END//////////////////////////////////////////////////////////////////////////////
 
 /* ***************************************************Regex et control du formulaire************************************************************ */
-let defaultInput = {
-  firstName: false,
-  lastName: false,
-  address: false,
-  city: false,
-  email: false,
-};
-
 // creer les prametres de chaque input du formulaire et les ajouter dans un objet
 let inputParameters = {
   firstName: {
     regex: /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/, // regex pour le nom
     error: "Veuillez entrer un prénom valide", // message d'erreur
+    valid: false, // validité de l'input
   },
   lastName: {
     regex: /^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$/, // regex pour le nom
     error: "Veuillez entrer un nom valide", // message d'erreur
+    valid: false, // validité de l'input
   },
   address: {
     regex: /(^.{1,}[a-zA-ZÀ-ÿ0-9]+$)/, // regex pour l'adresse
     error: "Veuillez entrer une adresse valide", // message d'erreur
+    valid: false, // validité de l'input
   },
   city: {
     regex: /(^([a-zA-Z,éêèàëÉÈÊË.'-]+[ ]?){2,}$)/, // regex pour la ville
     error: "Veuillez entrer une ville valide", // message d'erreur
+    valid: false, // validité de l'input
   },
   email: {
     regex: /(^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-zA-Z]{2,4}$)/, // regex pour l'email
     error: "Veuillez entrer un email valide", // message d'erreur
+    valid: false, // validité de l'input
   },
 };
 
 // creer des message d'erreur pour chaque input
-function controler(input, idForMsgError, inputParameters, defaultInput) {
+function controler(input, idForMsgError, inputParameters) {
   // on passe en parametre l'input, l'id du message d'erreur et l'objet inputParameters
   input.addEventListener("input", function (event) {
     // au changement de l'input
@@ -170,19 +167,18 @@ function controler(input, idForMsgError, inputParameters, defaultInput) {
       // si la regex ne correspond pas
       msgErrorr.textContent = `${inputParameters.error}`; // on affiche le message d'erreur
       msgErrorr.style.display = "block";
-      defaultInput = false; // on change la valeur de l'input dans l'objet defaultInput
+      inputParameters.valid = false; // on change la valeur de l'input dans l'objet defaultInput
     } else {
       msgErrorr.style.display = "none"; // on cache le message d'erreur
-      defaultInput = true; // on change la valeur de l'input dans l'objet defaultInput
-      console.log(defaultInput);
+      inputParameters.valid = true; // on change la valeur de l'input dans l'objet defaultInput
     }
   });
 }
-controler(firstName, "firstNameErrorMsg", inputParameters.firstName,defaultInput.firstName); // on appelle la fonction controler pour le premier input
-controler(lastName, "lastNameErrorMsg", inputParameters.lastName,defaultInput.lastName); // on appelle la fonction controler pour le second input
-controler(address, "addressErrorMsg", inputParameters.address,defaultInput.address); // on appelle la fonction controler pour le troisieme input
-controler(city, "cityErrorMsg", inputParameters.city,defaultInput.city); // on appelle la fonction controler pour le quatrieme input
-controler(email, "emailErrorMsg", inputParameters.email,defaultInput.email); // on appelle la fonction controler pour le cinquieme input
+controler(firstName, "firstNameErrorMsg", inputParameters.firstName); // on appelle la fonction controler pour le premier input
+controler(lastName, "lastNameErrorMsg", inputParameters.lastName); // on appelle la fonction controler pour le second input
+controler(address, "addressErrorMsg", inputParameters.address); // on appelle la fonction controler pour le troisieme input
+controler(city, "cityErrorMsg", inputParameters.city); // on appelle la fonction controler pour le quatrieme input
+controler(email, "emailErrorMsg", inputParameters.email); // on appelle la fonction controler pour le cinquieme input
 
 /* ***************************************************Envoi du formulaire*********************************************************************** */
 // fonction pour envoyer le formulaire
@@ -204,18 +200,10 @@ function sendForm() {
       city: city.value,
       email: email.value,
     };
-
-    controler(firstName, "firstNameErrorMsg", inputParameters.firstName,defaultInput.firstName); // on appelle la fonction controler pour le premier input
-    controler(lastName, "lastNameErrorMsg", inputParameters.lastName,defaultInput.lastName); // on appelle la fonction controler pour le second input
-    controler(address, "addressErrorMsg", inputParameters.address,defaultInput.address); // on appelle la fonction controler pour le troisieme input
-    controler(city, "cityErrorMsg", inputParameters.city,defaultInput.city); // on appelle la fonction controler pour le quatrieme input
-    controler(email, "emailErrorMsg", inputParameters.email,defaultInput.email); // on appelle la fonction controler pour le cinquieme input
-    console.log(defaultInput);
     
     // si tous les champs sont valides on envoie le formulaire
-    if (defaultInput.firstName && defaultInput.lastName && defaultInput.address && defaultInput.city && defaultInput.email) {
+    if (inputParameters.firstName.valid && inputParameters.lastName.valid && inputParameters.address.valid && inputParameters.city.valid && inputParameters.email.valid) {
       basket.sendContact(contact); // on appelle la fonction
-      console.log(defaultInput.address);
     }
   });
 }

@@ -41,6 +41,10 @@ class Basket { // créer une class pour stocker mes fonctions et les utiliser
     if (quantity < 1 || quantity > 100) {
       alert("La quantité doit être comprise entre 1 et 100");
     }
+    // si la quantité est supérieur a 0 alors on supprime le produit du cart
+    if (quantity <= 0) {
+      this.deleteItem(id, color);
+    }
     let found = this.cart.find((p) => p.id === id && p.color === color); // trouver le produit dans le cart
     if (found) {
       found.quantity = quantity; // modifier la quantité du produit
