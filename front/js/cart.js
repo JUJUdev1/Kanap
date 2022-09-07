@@ -5,14 +5,14 @@ const totalQuantity = document.getElementById("totalQuantity");
 const form = document.querySelector("cart__order__form");
 
 /* ***************************************************Display de mes produits******************************************************************** */
-// fonction qui va recuperer les données de chaque produit en fonction des produits dans le localStorage
+
 async function displayAllProducts() {
+  // fonction qui recuperer les données de chaque produit en fonction du localStorage
   const data = await basket.getApi(); // recuperer les données de l'api
   for (let cartItem of basket.cart) {
-    // pour chaque produit dans le localStorage
-    //creer un filter pour recuperer les données du produit en fonction de son id
-    const product = data.filter((p) => p._id == cartItem.id);
-    displayCart(product[0], cartItem); // afficher le produit
+    // pour chaque produit dans le panier
+    const product = data.filter((p) => p._id == cartItem.id); // on créer un filtre pour recuperer toute les données du produit
+    displayCart(product[0], cartItem); // afficher le produit avec notre fonction displayCart
   }
   return; // retourner la fonction
 }
@@ -103,16 +103,14 @@ async function displayCart(product, cartItem) {
     if (window.confirm("Voulez-vous vraiment supprimer ce produit ?")) {
       // si on clique sur "oui"
       basket.deleteItem(cartItem.id, cartItem.color); // on supprime le produit du localStorage
+      basket.getTotalPrice(); // on calcule le prix total du panier
     }
-    displayAllProducts(); // on affiche les produits
-    basket.getTotalPrice(); // on calcule le prix total du panier
   });
 
   // fonction pour modifier la quantité d'un produit dans le localStorage
-  cartItemContentSettingsQuantityInput.addEventListener(
+  cartItemContentSettingsQuantityInput.addEventListener( // au changement de la valeur de l'input
     "change",
     function (event) {
-      // au changement de la quantité
       const findParent = event.target.closest("article"); // on cherche le parent de l'input
       const dataId = findParent.dataset.id; // on recupere l'id du produit
       const dataColor = findParent.dataset.color; // on recupere la couleur du produit
@@ -161,7 +159,7 @@ let inputParameters = {
 };
 
 // creer des message d'erreur pour chaque input
-function controler(input, idForMsgError, inputParameters) {
+function controler(input, idForMsgError, inputParameters, defaultInput) {
   // on passe en parametre l'input, l'id du message d'erreur et l'objet inputParameters
   input.addEventListener("input", function (event) {
     // au changement de l'input
@@ -173,21 +171,17 @@ function controler(input, idForMsgError, inputParameters) {
       msgErrorr.textContent = `${inputParameters.error}`; // on affiche le message d'erreur
       msgErrorr.style.display = "block";
       defaultInput = false; // on change la valeur de l'input dans l'objet defaultInput
-
-      console.log("ici", defaultInput);
     } else {
       msgErrorr.style.display = "none"; // on cache le message d'erreur
       defaultInput = true; // on change la valeur de l'input dans l'objet defaultInput
-      console.log("la", defaultInput);
     }
   });
 }
-controler(firstName, "firstNameErrorMsg", inputParameters.firstName); // on appelle la fonction controler pour le premier input
-controler(lastName, "lastNameErrorMsg", inputParameters.lastName); // on appelle la fonction controler pour le second input
-controler(address, "addressErrorMsg", inputParameters.address); // on appelle la fonction controler pour le troisieme input
-controler(city, "cityErrorMsg", inputParameters.city); // on appelle la fonction controler pour le quatrieme input
-controler(email, "emailErrorMsg", inputParameters.email); // on appelle la fonction controler pour le cinquieme input
-
+controler(firstName, "firstNameErrorMsg", inputParameters.firstName,defaultInput.firstName); // on appelle la fonction controler pour le premier input
+controler(lastName, "lastNameErrorMsg", inputParameters.lastName,defaultInput.lastName); // on appelle la fonction controler pour le second input
+controler(address, "addressErrorMsg", inputParameters.address,defaultInput.address); // on appelle la fonction controler pour le troisieme input
+controler(city, "cityErrorMsg", inputParameters.city,defaultInput.city); // on appelle la fonction controler pour le quatrieme input
+controler(email, "emailErrorMsg", inputParameters.email,defaultInput.email); // on appelle la fonction controler pour le cinquieme input
 /* ***************************************************Envoi du formulaire*********************************************************************** */
 // fonction pour envoyer le formulaire
 function sendForm() {
@@ -195,23 +189,24 @@ function sendForm() {
   order.addEventListener("click", function (event) {
     event.preventDefault(); // on empeche l'envoi du formulaire
     // ecoute le click sur le bouton de commande
-    const firstName = document.getElementById("firstName").value; // recupere le prénom
-    const lastName = document.getElementById("lastName").value; // recupere le nom
-    const address = document.getElementById("address").value; // recupere l'adresse
-    const city = document.getElementById("city").value; // recupere la ville
-    const email = document.getElementById("email").value; // recupere l'email
+    const firstName = document.getElementById("firstName"); // recupere le prénom
+    const lastName = document.getElementById("lastName"); // recupere le nom
+    const address = document.getElementById("address"); // recupere l'adresse
+    const city = document.getElementById("city"); // recupere la ville
+    const email = document.getElementById("email"); // recupere l'email
     const contact = {
       // crée un objet contact
-      firstName: firstName,
-      lastName: lastName,
-      address: address,
-      city: city,
-      email: email,
+      firstName: firstName.value,
+      lastName: lastName.value,
+      address: address.value,
+      city: city.value,
+      email: email.value,
     };
+
     // si tous les champs sont valides on envoie le formulaire
-    if (defaultInput)
-    {
+    if (defaultInput.firstName && defaultInput.lastName && defaultInput.address && defaultInput.city && defaultInput.email) {
       basket.sendContact(contact); // on appelle la fonction
+      console.log(defaultInput);
     }
   });
 }

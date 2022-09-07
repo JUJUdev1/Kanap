@@ -1,12 +1,9 @@
-// créer une class pour stocker mes fonctions et les utiliser
-class Basket {
-  constructor() {
-    // constructeur de ma class Basket
+class Basket { // créer une class pour stocker mes fonctions et les utiliser
+  constructor() { // constructeur de ma class Basket
     let cart = localStorage.getItem("cart"); // recuperer le localStorage
-    if (cart == null) {
-      // si le localStorage est vide
+    if (cart == null) { // si le localStorage est vide
       this.cart = []; // je créer un tableau vide
-    } else {
+    } else { // sinon
       this.cart = JSON.parse(cart); // je recupere le localStorage
     }
   }
@@ -24,28 +21,31 @@ class Basket {
       .then((data) => data); // stocker le json dans une variable
   }
 
-  // fonction pour sauvegarder mon cart
   saveCart() {
     localStorage.setItem("cart", JSON.stringify(this.cart)); // sauvegarder le cart dans le localStorage
   }
 
   // fonction pour supprimer un produit du localStorage
-  deleteItem(id, color) {
-    let found = this.cart.find((p) => p.id === id && p.color === color);
-    if (found) {
-      this.cart.splice(this.cart.indexOf(found), 1);
+  deleteItem(id, color) { 
+    let found = this.cart.find((p) => p.id === id && p.color === color); // trouver le produit dans le cart
+    if (found) { // si le produit est trouvé
+      this.cart.splice(this.cart.indexOf(found), 1); // utiliser un splice pour supprimer le produit
     }
-    window.location.reload();
-    this.saveCart();
+    window.location.reload(); // recharger la page
+    this.saveCart(); // sauvegarder le cart
   }
 
-  // fonction pour ajouter un produit au localStorage
-  updateQuantity(id, color, quantity) {
-    let found = this.cart.find((p) => p.id === id && p.color === color);
-    if (found) {
-      found.quantity = quantity;
+  
+  updateQuantity(id, color, quantity) { // fonction pour modifier la quantité d'un produit
+    // si la quantité est inférieur a 1 ou supérieur a 100 afficher un message d'erreur
+    if (quantity < 1 || quantity > 100) {
+      alert("La quantité doit être comprise entre 1 et 100");
     }
-    this.saveCart();
+    let found = this.cart.find((p) => p.id === id && p.color === color); // trouver le produit dans le cart
+    if (found) {
+      found.quantity = quantity; // modifier la quantité du produit
+    }
+    this.saveCart(); // sauvegarder le cart
   }
 
   // fonction pour calculer le prix total du panier
@@ -87,6 +87,7 @@ class Basket {
       window.alert(
         "Votre panier est vide, veuillez ajouter des produits dans votre panier"
       );
+      return;
     } else {
       for (let i in this.cart) {
         // pour chaque element du cart
